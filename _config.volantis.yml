@@ -601,7 +601,7 @@ sidebar:
       class: category
       display: [desktop] # [desktop, mobile]
       header:
-        icon: fa-solid fa-folder-open
+        icon: fas fa-folder-open
         title: 文章分类
         url: /categories/
     # ---------------------------------------
