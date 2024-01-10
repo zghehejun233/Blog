@@ -23,7 +23,7 @@ default:
 
 cdn_system:
   # CDN 优先级 从高到低排序 写入 priority 列表即表示启用(enable)
-  priority: [custom, local, cdnjs, npm, static]
+  priority: [local, cdnjs, npm, static]
   # ========================================================================
   # cdn数据配置文件见 "theme/_cdn.yml", 可以在 source/_data/cdn.yml 覆盖 theme/_cdn.yml
   # 变量说明：
@@ -152,7 +152,7 @@ navbar:
     - name: 暗黑模式
       icon: fa-solid fa-moon
       toggle: darkmode
-  search: ''   # Search bar placeholder
+  search: '搜索'   # Search bar placeholder
 ############################### Navigation Bar ############################### > end
 
 
@@ -168,7 +168,7 @@ cover:
   # background: https://bing.ioliu.cn/v1/rand?w=1920&h=1200
   # logo: https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-Cover@3x.png
   title: "ThuRAY's Blog"
-  subtitle: 'Hi'
+  subtitle: '许久不见，甚是想念'
   search: '' # search bar placeholder
   features:
     - name: 分类
@@ -553,19 +553,21 @@ sidebar:
     blogger:
       class: blogger
       display: [desktop] # [desktop, mobile]
-      avatar: https://thuray.xyz/header.png # https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png
-      shape: rectangle # circle, rectangle
+      avatar: https://thuray.xyz/blog-header.JPG # https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png
+      shape: circle # circle, rectangle
       url: /about/
       title: 'ThuRAY'
       subtitle: '流年如歌，一曲终了客且行. '
       jinrishici: false # Poetry Today. You can set a string, and it will be displayed when loading fails.
-      social:
-        - icon: fa-solid fa-rss
-          url: /atom.xml
-        - icon: fa-solid fa-envelope
-          url: mailto:qingjiaowohehejun@gmail.com
-        - icon: fab fa-github
-          url: https://github.com/zghehejun233/
+      # social:
+      #   - icon: fa-solid fa-rss
+      #     url: atom.xml
+      #   - icon: fas fa-envelope
+      #     url: mailto:me@xaoxuu.com
+      #   - icon: fab fa-github
+      #     url: https://github.com/xaoxuu
+      #   - icon: fas fa-headphones-alt
+      #     url: https://music.163.com/#/user/home?id=63035382
     # ---------------------------------------
     # toc widget (valid only in articles)
     toc:
@@ -606,6 +608,26 @@ sidebar:
       color: true
       start_color: '#999'
       end_color: '#555'
+    # ---------------------------------------
+    # feedback widget
+    feedback:
+      class: grid
+      display: [desktop, mobile]
+      header:
+        icon: fas fa-headset
+        title: 联系我
+        url: https://github.com/volantis-x/hexo-theme-volantis
+      fixed: true # 固定宽度
+      rows:
+        - name: 反馈BUG
+          icon: fas fa-bug
+          url: https://github.com/volantis-x/hexo-theme-volantis/issues/
+        - name: 疑问求助
+          icon: fas fa-question-circle
+          url: https://github.com/volantis-x/hexo-theme-volantis/issues/
+        - name: 提个建议
+          icon: fas fa-lightbulb
+          url: https://github.com/volantis-x/hexo-theme-volantis/issues/
     # ---------------------------------------
     # qrcode widget
     qrcode:
@@ -694,7 +716,7 @@ tag_plugins:
     iconfont: 'Font Awesome 6 Free'
   # {% checkbox %}
   checkbox:
-    interactive: false # enable interactive for user
+    interactive: true # enable interactive for user
     color: '' # color for default checkbox
   # {% link title, url, img %}
   link:
@@ -707,22 +729,22 @@ site_footer:
   # layout of footer: [aplayer, social, license, info, copyright]
   layout: [license, copyright]
   social:
-    - icon: #fa-solid fa-rss
-      url:
-    # or
-    - img:
-      url:
-    # or
-    - avatar:
-      url:
+    - icon: fas fa-rss
+      url: atom.xml
+    - icon: fas fa-envelope
+      url: mailto:me@xaoxuu.com
+    - icon: fab fa-github
+      url: https://github.com/xaoxuu
+    - icon: fas fa-headphones-alt
+      url: https://music.163.com/#/user/home?id=63035382
   # site source
-  source: https://github.com/volantis-x/volantis-docs/
+  # source: https://github.com/volantis-x/volantis-docs/
   # analytics using busuanzi
-  analytics: 
-    <span>本站总访问量为 <span id='busuanzi_value_site_pv'><i class="fa-solid fa-loader fa-spin fa-fw" aria-hidden="true"></i></span> 次</span>
-    <span>访客数为 <span id='busuanzi_value_site_uv'><i class="fa-solid fa-loader fa-spin fa-fw" aria-hidden="true"></i></span> 人</span>
+  analytics: >
+    <span id="lc-sv">本站总访问量为 <span id='number'><i class="fa-solid fa-loader fa-spin fa-fw" aria-hidden="true"></i></span> 次</span>
+    <span id="lc-uv">访客数为 <span id='number'><i class="fa-solid fa-loader fa-spin fa-fw" aria-hidden="true"></i></span> 人</span>
   # site copyright
-  copyright: '[Copyright © since 2023 ThuRAY](/)'
+  copyright: '[Copyright © since 2021 ThuRAY](/)'
   # You can add your own property here. (Support markdown, for example: br: '<br>')
   br: '<br>'
 ############################### Site Footer ############################### > end
@@ -1121,9 +1143,9 @@ search:
   algolia:
     searchAsYouType: true # If false, triggers the search only on submit.
     hitsPerPage: 5 # Set the number of hits per page.
-    placeholder: 'Search...' # The placeholder text of the input.
+    placeholder: '搜索' # The placeholder text of the input.
   meilisearch:
-    placeholder: 'Search...'
+    placeholder: '搜索'
     searchKey: ''
     indexName: ''
     hostUrl: ''
@@ -1237,7 +1259,7 @@ color_scheme:
 ############################### Custom css ############################### > start
 custom_css:
   cursor:
-    enable: #true
+    enable: true
     text: volantis-static/media/cursor/text.png # https://cdn.jsdelivr.net/gh/inkss/common@1/cursor/text.png
     pointer: volantis-static/media/cursor/pointer.png # https://cdn.jsdelivr.net/gh/inkss/common@1/cursor/pointer.png
     default: volantis-static/media/cursor/left_ptr.png # https://cdn.jsdelivr.net/gh/inkss/common@1/cursor/left_ptr.png
@@ -1246,7 +1268,7 @@ custom_css:
     zoom-in: volantis-static/media/cursor/zoom-in.png # https://cdn.jsdelivr.net/gh/inkss/common@1/cursor/zoom-in.png
     grab: volantis-static/media/cursor/openhand.png # https://cdn.jsdelivr.net/gh/inkss/common@1/cursor/openhand.png
   font_smoothing: true # font-smoothing for webkit
-  max_width: 1280px # Sum of body width and sidebar width (This limit will be exceeded when the device width is greater than 2000px, reaching 75% of the total width)
+  max_width: 1080px # Sum of body width and sidebar width (This limit will be exceeded when the device width is greater than 2000px, reaching 75% of the total width)
   scrollbar:
     size: 4px
     border: 2px
