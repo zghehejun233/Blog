@@ -1,15 +1,12 @@
-- group: 分组标题
-  description:  分组描述
+- group: 大学朋友们
+  description: 就读 SDU 期间结交的一些朋友
   items:
-    - title: 名称
-      avatar: 头像
-      url: 链接
-      screenshot: 截图
-      keywords: 关键词
-      description: 描述
-    - title: 名称
-      avatar: 头像
-      url: 链接
-      screenshot: 截图
-      keywords: 关键词
-      description: 描述
+    - title: Kyrie
+      avatar: https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ffb077c37-abac-4983-b038-991d72572f65%2F8665b815-b713-409d-b2dd-d24f63313bed%2FIMG_3470.png?table=collection&id=c601ffcd-b9fe-4917-b1f0-a34fef628be6&t=c601ffcd-b9fe-4917-b1f0-a34fef628be6&width=800
+      url: https://www.virtual-kyrie.cc/
+    - title: 洛雪
+      avatar: https://www.zwn2001.space/img/favicon.webp
+      url: https://www.zwn2001.space/
+    - title: Cooper
+      avatar: https://thuray.xyz/29a40b81be98206c833fd1a5f98e4816.jpg
+      url: https://icooper.cc/

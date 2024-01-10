@@ -3,18 +3,19 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 你好
-subtitle: '你也好'
-description: '我也好'
+title: "ThuRAY's Blog"
+subtitle: 'Hi'
+description: 'This is a blog site.'
 keywords:
-author: 你好
+favicon: https://thuray.xyz/blog-header-modified.png
+author: ThuRAY
 language: 'zh-CN'
 timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
-permalink: :year/:month/:day/:title/
+url: http://blog.thuray.xyz/
+permalink: :layout/:hash.html
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
