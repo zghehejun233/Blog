@@ -559,15 +559,15 @@ sidebar:
       title: 'ThuRAY'
       subtitle: '流年如歌，一曲终了客且行. '
       jinrishici: false # Poetry Today. You can set a string, and it will be displayed when loading fails.
-      # social:
-      #   - icon: fa-solid fa-rss
-      #     url: atom.xml
-      #   - icon: fas fa-envelope
-      #     url: mailto:me@xaoxuu.com
-      #   - icon: fab fa-github
-      #     url: https://github.com/xaoxuu
-      #   - icon: fas fa-headphones-alt
-      #     url: https://music.163.com/#/user/home?id=63035382
+      social:
+        # - icon: fas fa-rss
+        #   url: atom.xml
+        - icon: fas fa-envelope
+          url: mailto:qingjiaowohehejun@gmail.com
+        - icon: fab fa-github
+          url: https://github.com/zghehejun233
+        - icon: fab fa-x
+          url: https://twitter.com/askmehehe233
     # ---------------------------------------
     # toc widget (valid only in articles)
     toc:
@@ -660,11 +660,12 @@ sidebar:
           text: '本站总字数：'   # 需要启用 wordcount
           unit: '字'
         visitcounter:
-          enable: true
           siteuv:
+            enable: true
             text: '本站访客数：'
             unit: '人'
           sitepv:
+            enable: true
             text: '本站总访问量：'
             unit: '次'
         lastupd:
@@ -727,16 +728,16 @@ tag_plugins:
 ############################### Site Footer ############################### > start
 site_footer:
   # layout of footer: [aplayer, social, license, info, copyright]
-  layout: [license, copyright]
+  layout: [license, analytics, copyright]
   social:
-    - icon: fas fa-rss
-      url: atom.xml
+    # - icon: fas fa-rss
+    #   url: atom.xml
     - icon: fas fa-envelope
-      url: mailto:me@xaoxuu.com
+      url: mailto:qingjiaowohehejun@gmail.com
     - icon: fab fa-github
-      url: https://github.com/xaoxuu
-    - icon: fas fa-headphones-alt
-      url: https://music.163.com/#/user/home?id=63035382
+      url: https://github.com/zghehejun233
+    # - icon: fas fa-headphones-alt
+    #   url: https://music.163.com/#/user/home?id=63035382
   # site source
   # source: https://github.com/volantis-x/volantis-docs/
   # analytics using busuanzi
@@ -755,7 +756,8 @@ plugins:
   # jquery
   globalJquery: false # 全局引入 jquery
   # fontawesome
-  fontawesome: true
+  # fontawesome: true
+  fontawesome: volantis-static/libs/@fortawesome/fontawesome-free/css/all.min.css
   ################ optional plugins ################
   # issues api
   sitesjs:
@@ -833,11 +835,13 @@ plugins:
   # fontawesome animation for fontawesome V5
   fontawesome_animation:
     enable: #true
+    css: volantis-static/libs/font-awesome-animation/font-awesome-animation.min.css
  
   # Typing Effects
   comment_typing:
     enable: #true
- 
+    js: volantis-static/libs/comment_typing/comment_typing.js # https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@2/js/comment_typing.js
+
   # 视差滚动效果 Slide Background
   parallax:
     enable: true
@@ -1047,8 +1051,8 @@ rightmenus:
   # 右键菜单项及加载顺序
   # 内容示例：plugins.[组名], menus.[组名], hr(分割线，推荐去线留白), music(音乐控制器)
   order:
-    # - plugins.navigation
-    # - hr
+    - plugins.navigation
+    - hr
     - plugins.inputBox
     - plugins.seletctText
     - plugins.elementCheck
@@ -1332,6 +1336,15 @@ custom_css:
       # weight: normal
       # style: normal
 ############################### Custom css ############################### > end
+
+############################### Analytics ############################### > start
+analytics:
+  busuanzi: # volantis-static/libs/busuanzi/js/busuanzi.pure.mini.js #https://cdn.jsdelivr.net/gh/volantis-x/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js
+  leancloud: # 请使用自己的 id & key 以防止数据丢失
+    app_id: 2EowLHdMn0PM3Pd5mQqIUZCx-MdYXbMMI
+    app_key: og81RjC7xi89MAUJKfC9PnXX
+    custom_api_server: # 国际版一般不需要写，除非自定义了 API Server
+############################### Analytics ############################### > end
 
 ############################### SEO ############################### > start
 seo:
