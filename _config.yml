@@ -103,3 +103,10 @@ theme: volantis
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# Security
+encrypt: # hexo-blog-encrypt
+  abstract: "这是一篇加密文章。"
+  message: "这是一篇加密文章，你需要输入密码才能查看。"
+  wrong_pass_message: "密码错误，请重新输入。"
+  wrong_hash_message: "密码错误，请重新输入。"

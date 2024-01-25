@@ -1,0 +1,11 @@
+# 处于更新中的文档
+updating:
+  title: 更新中的文档
+  message: 本文档正在更新中，可能会有部分内容不完整，敬请谅解。
+  position: right # bottom (底部通知), right (右侧通知，会自动消失)
+  theme: default # default, warning
+  cache: false # 是否记住选项（下次不再弹出）
+  buttons: # 按钮
+    - title: 我知道了
+      # url: /about
+      dismiss: true # 点击了是否关闭底部横幅
