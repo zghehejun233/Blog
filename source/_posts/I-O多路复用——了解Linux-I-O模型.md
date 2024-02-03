@@ -108,7 +108,7 @@ Linux中共有5种I/O模型，分别是：
 
 ### Blocking I/O
 
-![Blocking I/O](https://s2.loli.net/2024/02/01/xbU5Sa7i2khyeIL.png)
+![Blocking I/O](https://s2.loli.net/2024/02/02/VOz3XMn8rcawsSi.png)
 
 阻塞IO顾名思义，当程序向 Kernel 发起 System call `read()`时，进程此时阻塞，等待数据就绪(Kernel 读取数据到 Kernel space)。
 
@@ -116,20 +116,143 @@ Linux中共有5种I/O模型，分别是：
 
 ### Non-blocking I/O
 
-![Non-Blocking I/O](https://s2.loli.net/2024/02/01/bXwJsTFetKy1f82.png)
+![Non-Blocking I/O](https://s2.loli.net/2024/02/02/Y68lvXiwF9V2MaJ.png)
 
 相对于阻塞I/O在那傻傻的等待，非阻塞I/O隔一段时间就发起 System call 看数据是否就绪(`ready`)。如果数据就绪，就从 Kernel space 复制到 user space，操作数据; 如果还没就绪，Kernel 会立即返回`EWOULDBLOCK`这个错误。
 
-Non-blocking I/O的优势在于，进程发起I/O操作时，不会因为数据还没就绪而阻塞，这就是”非阻塞”的含义。但这种I/O模型缺陷过于明显。在本地I/O，Kernel 读取数据很快，这种模式下多了至少一次 System call，而 System call 是比较消耗CPU的操作。对于Socket而言，大量的 System call 更是这种模型显得很鸡肋。
+Non-blocking I/O 的优势在于，进程发起I/O操作时，不会因为数据还没就绪而阻塞，这就是”非阻塞”的含义。但这种I/O模型缺陷过于明显。在本地I/O，Kernel 读取数据很快，这种模式下多了至少一次 System call，而 System Call 是比较消耗CPU的操作。对于Socket而言，大量的 System call 更是这种模型显得很鸡肋。
+
+> 之所以说 System Call 是比较消耗CPU的操作，原因在于发起 System Call 后 OS Kernel 会从用户态 Trap 到内核态，在切换过程中会发生寄存器组的切换、进程状态的转换等操作，这些操作都是相当消耗处理机资源的。
 
 ### I/O Multiplexing
 
 I/O Multiplexing 就是本篇文章的重头戏——多路复用了。
 
-I/O Multiplexing 首先向 Kernel 发起 System call，传入 File descriptor 和感兴趣的事件(`readable`、`writable`等)让 Kernel 监测，当其中一个或多个`fd`数据就绪，就会返回结果，程序再发起真正的I/O操作`recvfrom`读取数据。
+![I/O Multiplexing](https://s2.loli.net/2024/02/02/Y68lvXiwF9V2MaJ.png)
 
-在监听方式上，也就是发起的这个 System Call 共有三种：`select`、`poll`和`epoll`，接下来分别讨论他们。
+在 Non-Blocing I/O 中，尽管处理机的资源有一部分可以被释放出来处理其他任务，但是 Application 仍然承担了轮询的压力；但是在 I/O Multiplexing 中轮询的操作通过`select`、`poll`和`epoll`三个 System Call 执行，并在合适的时机由 OS 调用回调函数处理。
+
+多路复用允许进程同时监听并处理多个进程的状态，包括`readable`、`writeable`等。
+
+#### select
+
+```c
+#include <sys/select.h>
+
+//返回值：readfds、writefds、exceptfds 中事件就绪的fd的数量
+int select(int nfds,                                    // 最大文件描述符fd+1
+           fd_set *restrict readfds,                    // 等待读取的fds
+           fd_set *restrict writefds,                   // 等待写入的fds
+           fd_set *restrict exceptfds,                  // 异常fds
+           struct timeval *restrict timeout);           // 超时时间
+```
+
+`select`函数会接受若干文件描述符，并返回准备就绪的数量。
+
+1. 程序阻塞等待kernel返回。
+2. kernel发现有fd就绪，返回数量。
+3. 程序轮询3个fd_set寻找就绪的fd。
+4. 发起真正的I/O操作（read、recvfrom等）。
+
+#### poll
+
+```c
+#include <poll.h>
+
+int poll(struct pollfd *fds,                        // 待监视的fd构成的struct pollfd数组
+         nfds_t nfds,                               // 数组fds[]中元素数量
+         int timeout);                              // 轮询时等待的最大超时时间
+
+struct pollfd {
+    int fd;                                         // 待监视的fd
+    short events;                                   // 请求监视的事件
+    short revents;                                  // 实际收到的事件
+};
+```
+
+`poll`与`select`之间没有特别大的区别，相比于`select`，`poll`主要有这两个改进：
+
+1. `select`的文件描述符集合是一个数组，而`poll`的文件描述符集合是一个结构体数组，这样可以避免`select`的文件描述符集合的大小限制。
+2. `poll`的`revents`字段是一个输出参数，它会告诉我们哪些文件描述符就绪了。每次调用poll时不用像select一样每次都需要重新设置r、w、e文件描述符集，方便使用也减少数据向内核拷贝的开销。
+
+#### epoll
+
+`epoll`的函数定义：
+
+```c
+#include <sys/poll.h>
+
+// 创建一个epfd，最多监视${size}个文件描述符
+int epoll_create(int size);
+
+int epoll_ctl(int epfd,                             // epfd
+             int op,                                // 操作类型（注册、取消注册）
+             int fd,                                // 待监视的fd
+             struct epoll_event *event);            // 待监视的fd上的io事件
+
+int epoll_wait(int epfd,                            // epfd
+               struct epoll_event *events,          // 最终返回的就绪事件
+               int maxevents,                       // 期望的就绪事件数量
+               int timeout);                        // 超时时间
+
+int epoll_wait(int epfd,                            // epfd
+               struct epoll_event *events,          // 接收返回的就绪事件
+               int maxevents,                       // 期望的就绪事件数量
+               int timeout,                         // 超时时间
+               const sigset_t *sigmask);            // 信号掩码
+
+typedef union epoll_data {
+    void *ptr;
+    int fd;
+    __uint32_t u32;
+    __uint64_t u64;
+} epoll_data_t;
+
+struct epoll_event {
+    __uint32_t events;                              // epoll events
+    epoll_data_t data;                              // user data variable
+};
+```
+
+`epoll`是Linux下的I/O多路复用机制，它是`select`和`poll`的增强版本，它的优势在于：
+
+1. `epoll`没有最大并发连接的限制，它的性能随着系统中的文件描述符数量的增加而线性下降。
+2. `epoll`使用“事件”的就绪通知方式，通过`epoll_ctl`注册fd，一旦fd就绪，内核会采用类似回调的方式来激活这个fd，这样就避免了`select`和`poll`每次调用都需要遍历整个fd集合的缺点。
+3. `epoll`的`epoll_wait`函数会将就绪的fd放入到一个链表中，这样就避免了`select`和`poll`每次调用都需要重新设置fd集合的缺点。
+
+在实际场景中，`epoll`毫无疑问是最佳选择。一方面，`poll`相比于`select`并没有太大的优化；另一方面，`epoll`相比于另外二者在处理集合、事件通知上都有很大的优势。不过性能提升的代价就是与前两者相比，`epoll`的API更加复杂。
+
+首先，`epoll`支持更多的事件（`poll`和`select`只支持读、写、异常三种事件），`epoll`中可以关注的事件主要有：
+
+- `EPOLLIN`，数据可读事件；
+- `EPOLLOUT`，数据可写事件；
+- `EPOLLRDHUP`，Socket 对端关闭连接或者关闭了写半连接；
+- `EPOLLPRI`，紧急数据读取事件；
+- `EPOLLERR`，错误事件；
+- `EPOLLHUP`，挂起事件，`epoll`**总是会等待该事件**，不需要显示设置；
+- `EPOLLET`，设置`epoll`以边缘触发模式工作（不指定该选项则使用级别触发Level Trigger模式）；
+- `EPOLLONESHOT`，设置`epoll`针对某个`fd`上的事件只通知一次，一旦`epoll`通知了某个事件，该`fd`上后续到达的事件将不会再发送通知，除非重新通过`epoll_ctl EPOLL_CTL_MOD`更新其关注的事件。
+
+以上是`epoll`能处理的更多种类的事件。除了更多的时间类型，`epoll`还支持两种事件模型：
+
+- 水平触发（Level Trigger）：默认模式，`epoll`会一直等待`fd`上的事件就绪，直到`fd`上的事件被处理完毕。在这种模式下，当描述符从未就绪变为就绪时，内核通过`epoll`告诉进程该描述符有事件发生，之后如果进程一直不对这个就绪状态做出任何操作，则内核会继续通知，直到事件处理完成。以LT方式调用的`epoll`接口就相当于一个速度比较快的`poll`模型。
+- 边缘触发（Edge Trigger）：`epoll`只会通知`fd`上的事件发生了变化，一旦`fd`上的事件被通知，`epoll`就不会再通知`fd`上的事件，直到`fd`上的事件发生了变化。在这种工作方式下，当描述符从未就绪变为就绪时，内核通过`epoll`告诉进程该描述符有事件发生，之后就算进程一直不对这个就绪状态做出任何操作，内核也不会再发送更多地通知，也就是说内核仅在该描述符事件到达的那个突变边缘对进程做出一次通知。
+  > 根据ET方式的特性，epoll工作在此模式时必须使用**非阻塞文件描述符**，以避免由于一个文件描述符的阻塞读、阻塞写操作把处理多个文件描述符的任务“饿死”。
+
+对于`selct`和`poll`，它们都是水平触发模式，而`epoll`可以支持水平触发和边缘触发模式。
 
 ### Signal Driven I/O
 
+> To be continued...
+
 ### Asynchronous I/O
+
+> To be continued...
+
+## Redis 中的多路复用
+
+## 参考资料
+
+- [Linux学习：I/O多路复用 - 牛客](https://www.nowcoder.com/discuss/477839665639313408?sourceSSR=search)
+- [带你彻底理解Linux五种I/O模型 - Bigbyto](https://wiyi.org/linux-io-model.html#io-multiplexing)
+- [Linux常见IO模型 - MySpace](https://www.hitzhangjie.pro/blog/2017-05-02-linux-common-io-model)
