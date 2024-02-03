@@ -154,6 +154,11 @@ int select(int nfds,                                    // 最大文件描述符
 3. 程序轮询3个fd_set寻找就绪的fd。
 4. 发起真正的I/O操作（read、recvfrom等）。
 
+`select`的优点有，但不多，例如：
+
+1. 几乎所有的操作系统都支持`select`。
+   > Windows 就没有`epoll`的支持。
+
 #### poll
 
 ```c
@@ -251,8 +256,23 @@ struct epoll_event {
 
 ## Redis 中的多路复用
 
+本节应对十分经典的“单线程的 Redis 为啥这么快？”问题。这个问题的答案一般是两部分：纯内存操作、多路复用和单线程模型。
+
+首先，对于Redis来讲，尽管经历了历代版本的多次修改（引入了多线程、异步IO等，参考下图），但是Redis的核心模型依然是单线程的。这个单线程的模型是Redis的核心优势，也是Redis能够如此快的原因之一。但是单线程的技术主要通过避免线程上下文的切换来提高性能，并不能解决I/O操作的问题。
+
+![Redis里程碑版本特性](https://s2.loli.net/2024/02/03/9oLBH4mNlEFGp2I.png)
+
+为了解决I/O性能瓶颈，Redis 首先引入的就是I/O多路复用技术，并在 6.0 版本中引入了多线程进一步优化Socket的处理效率。
+
+![Redis客户端连接处理机制](https://s2.loli.net/2024/02/03/tLms3PvdKWQiahI.png)
+
+再上图中可以看到，多个客户端的命令通过 Socket 与 Redis 通信并视作一个个时间。由于 Redis 的主线程采用单线程方案，所以各种操作都需要阻塞等待，这就意味着传输数据的IO阻塞会导致 Redis 无法处理其他客户端的请求。因此，各个 Socket 通过多路复用技术被一个（6.0 引入多线程 IO 后就是多个）线程处理，但不会由于网络传输/其他因素导致整个线程被阻塞，而是由主线程继续执行文件操作，直到有一个`fd`触发必要的事件再进行处理。
+
 ## 参考资料
 
 - [Linux学习：I/O多路复用 - 牛客](https://www.nowcoder.com/discuss/477839665639313408?sourceSSR=search)
 - [带你彻底理解Linux五种I/O模型 - Bigbyto](https://wiyi.org/linux-io-model.html#io-multiplexing)
 - [Linux常见IO模型 - MySpace](https://www.hitzhangjie.pro/blog/2017-05-02-linux-common-io-model)
+- [深入理解redis——Redis快的原因和IO多路复用深度解析 - Segmentful](https://segmentfault.com/a/1190000041488709)
+- [Redis 和 I/O 多路复用 - 面向信仰编程](https://draveness.me/redis-io-multiplexing/)
+- [一文搞懂 Redis 高性能之 IO 多路复用 - InfoQ](https://xie.infoq.cn/article/b3816e9fe3ac77684b4f29348)
