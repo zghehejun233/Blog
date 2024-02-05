@@ -98,6 +98,8 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: volantis
+popularPosts:
+  eyeCatchImageAttributeName: headimg
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
