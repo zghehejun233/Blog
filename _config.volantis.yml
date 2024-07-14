@@ -313,7 +313,7 @@ article:
       # 默认文章作者（可在 _data/author.yaml 中增加其他作者，并在 front-matter 中设置）
       # https://volantis.js.org/advanced-settings/#多人协同
       author:
-        avatar: https://thuray.xyz/blog-header-modified.png # https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/favicon/apple-touch-icon.png
+        avatar: https://image.thuray.xyz/2024/07/a9336a992a4744c7ed592e5eb6406773.png # https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/favicon/apple-touch-icon.png
         name: ThuRAY
         url: /
       # 文章创建日期
@@ -553,7 +553,7 @@ sidebar:
     blogger:
       class: blogger
       display: [desktop] # [desktop, mobile]
-      avatar: https://thuray.xyz/blog-header.JPG # https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png
+      avatar: https://image.thuray.xyz/2024/07/a9336a992a4744c7ed592e5eb6406773.png # https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png
       shape: circle # circle, rectangle
       url: /about/
       title: 'ThuRAY'
