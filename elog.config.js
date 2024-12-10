@@ -12,14 +12,15 @@ module.exports = {
   deploy: {
     platform: "local",
     local: {
-      outputDir: "./docs",
+      outputDir: "./source/_posts",
       filename: "title",
       format: "markdown",
-    },
-    frontMatter: {
-      enable: true,
-      include: [],
-      exclude: [],
+      formatExt: "./formatter.js",
+      frontMatter: {
+        enable: true,
+        include: [],
+        exclude: ["urlname", "catalog"],
+      },
     },
   },
   image: {
