@@ -6,12 +6,18 @@
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "server": "hexo server",
+    "elog:init": "elog init",
+    "elog:local": "elog sync -e .elog.env",
+    "elog:sync": "elog sync",
+    "elog:clean": "elog clean"
   },
   "hexo": {
     "version": "7.3.0"
   },
   "dependencies": {
+    "@elog/cli": "^0.14.3",
+    "@elog/plugin-img-r2": "^0.1.1",
     "hexo": "^7.0.0",
     "hexo-autonofollow": "^1.0.1",
     "hexo-blog-encrypt": "^3.1.9",
